@@ -1,4 +1,5 @@
 #if __has_include(<SDL.h>)
+
 #ifndef VIRTUALDISPLAYGC_H
 #define VIRTUALDISPLAYGC_H
 
@@ -423,7 +424,9 @@ protected:
     int32_t fps_, limit_fps_;
     uint64_t now_, end_;
 };
+
 #endif
 #else
     #error Please include library SDL2! (T_T)
+
 #endif
