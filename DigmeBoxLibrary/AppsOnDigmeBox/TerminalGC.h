@@ -29,13 +29,13 @@ template <size_t N> struct toRus
     {
         for (int i = 0; i < N; i++)
         {
-            if ((uint8_t)'À' <= (uint8_t)src_text[i] && (uint8_t)src_text[i] <= (uint8_t)'ï')
-                text[i] = ((uint8_t)src_text[i] - (uint8_t)'À') + 128;
-            else if ((uint8_t)'ð' <= (uint8_t)src_text[i] && (uint8_t)src_text[i] <= (uint8_t)'ÿ')
-                text[i] = ((uint8_t)src_text[i] - (uint8_t)'ð') + 224;
-            else if (src_text[i] == '¨')
+            if ((uint8_t)'Ã€' <= (uint8_t)src_text[i] && (uint8_t)src_text[i] <= (uint8_t)'Ã¯')
+                text[i] = ((uint8_t)src_text[i] - (uint8_t)'Ã€') + 128;
+            else if ((uint8_t)'Ã°' <= (uint8_t)src_text[i] && (uint8_t)src_text[i] <= (uint8_t)'Ã¿')
+                text[i] = ((uint8_t)src_text[i] - (uint8_t)'Ã°') + 224;
+            else if (src_text[i] == 'Â¨')
                 text[i] = (uint8_t)240;
-            else if (src_text[i] == '¸')
+            else if (src_text[i] == 'Â¸')
                 text[i] = (uint8_t)241;
             else text[i] = src_text[i];
         }
@@ -189,4 +189,5 @@ private:
         out.close();
     }
 #endif
+
 #endif
