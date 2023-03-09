@@ -105,4 +105,88 @@ private:
     uint32_t* buffer_background_color_;
 };
 
+#ifdef TERMINAL_DEBUG
+    constexpr int size_symbols = SYMBOL_WIDTH * 16 * SYMBOL_HEIGHT * 16 / 8;
+    char symbols[size_symbols]{};
+    void LoadSymbolsBMP(const char* path)
+    {
+        std::fstream in(path, std::ios::binary | std::ios::in);
+
+        if (in.is_open())
+        {
+            in.seekp(0, std::ios::end);
+            int size_file = (int)in.tellp();
+            in.seekp(0);
+            char* file = new char[size_file];
+            in.read(file, size_file);
+            in.close();
+
+            if (size_file > 14 && file[0] == 'B' && file[1] == 'M')
+            {
+                for (int i = 0; i < SYMBOL_HEIGHT * 16; i++)
+                    for (int j = 0; j < SYMBOL_WIDTH * 2; j++)
+                        symbols[i * (SYMBOL_WIDTH * 2) + j] = file[size_file - (SYMBOL_WIDTH * 2 + 2) - i * (SYMBOL_WIDTH * 2) + j];
+            }
+
+            delete[] file;
+        }
+    }
+    void SaveSymbolsFGC(const char* path)
+    {
+        static int header[SIZE_HEADER / 4]{};
+        std::fstream out(path, std::ios::binary | std::ios::out);
+
+        header[0] = ('F') | ('G' << 8) | ('C' << 16) | ('@' << 24);     //ID Field
+        header[1] = (SYMBOL_HEIGHT) | (SYMBOL_WIDTH << 16);             //Size of symbol
+        header[2] = SYMBOL_WIDTH * 16; header[3] = SYMBOL_HEIGHT * 16;  //Size of pixels
+
+        out.write((char*)header, SIZE_HEADER);                          //Header
+        out.write(symbols, size_symbols);                               //Pixel data
+        out.write("\0\0", 2);                                           //End
+
+        out.close();
+    }
+    void SaveSymbolsH(const char* path)
+    {
+        std::fstream out(path, std::ios::binary | std::ios::out);
+
+        out.write("const uint64_t default_font[] = {\n", 34);
+
+        for (int i = 0; i < SYMBOL_HEIGHT * 16; i++)
+        {
+            out.write("\t", 1);
+
+            for (int j = 0; j < SYMBOL_WIDTH * 2; j += 8)
+            {
+                out.write("0x", 2);
+                char value[2];
+
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 7], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 6], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 5], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 4], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 3], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 2], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 1], value);
+                out.write(value, 2);
+                showHEX(symbols[i * (SYMBOL_WIDTH * 2) + j + 0], value);
+                out.write(value, 2);
+
+                out.write(", ", 2);
+            }
+
+            out.write("\n", 1);
+        }
+
+        out.write("};", 2);
+
+        out.close();
+    }
+#endif
 #endif

@@ -24,5 +24,4 @@ protected:
     //Random value
     uint64_t randX_, randY_, randZ_;
 };
-
 #endif
