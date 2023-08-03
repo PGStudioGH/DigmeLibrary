@@ -19,7 +19,7 @@ public:
         DB_initSprGC(&image);
 
         fps.create(13, 1);
-        fps << "—¥áâì ®à¤¥­ !";
+        fps << "â€”Ä„Ã¡Ã¢Ä› Â®Å•Â¤Ä„Â­Â !";
         fps.update();
         DB_initTextGC(&fps);
 
